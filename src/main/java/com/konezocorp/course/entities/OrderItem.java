@@ -1,5 +1,6 @@
 package com.konezocorp.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.konezocorp.course.entities.pk.OrderItemPk;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -15,7 +16,7 @@ public class OrderItem implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    private OrderItemPk id;
+    private OrderItemPk id = new OrderItemPk();
 
     private Integer Quantity;
     private Double price;
@@ -23,13 +24,14 @@ public class OrderItem implements Serializable {
     public OrderItem() {
     }
 
-    public OrderItem(Order order, Product product, Double price, Integer quantity) {
+    public OrderItem(Order order, Product product,Integer quantity, Double price) {
         id.setOrder(order);
         id.setProduct(product);
+        this.Quantity = quantity;
         this.price = price;
-        Quantity = quantity;
-    }
 
+    }
+    @JsonIgnore
     public Order getOrder() {
         return id.getOrder();
     }
