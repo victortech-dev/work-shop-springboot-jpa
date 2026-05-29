@@ -1,9 +1,11 @@
 package com.konezocorp.course.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,9 +17,13 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false, unique = true)
     private String phone;
+    @Column(nullable = false)
     private String password;
 
     @JsonIgnore
@@ -36,6 +42,7 @@ public class User implements Serializable {
         this.phone = phone;
         this.password = password;
     }
+
 
     public long getId() {
         return id;

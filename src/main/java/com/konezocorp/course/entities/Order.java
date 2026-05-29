@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.konezocorp.course.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tb_order")
 public class Order implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -32,6 +34,8 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "id.order")
     private Set<OrderItem> items = new HashSet<>();
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Payment payment;
     public Order() {
     }
 
@@ -76,9 +80,18 @@ public class Order implements Serializable {
         this.id = id;
     }
 
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
     public Set<OrderItem> getItems() {
         return items;
     }
+
 
     @Override
     public boolean equals(Object o) {
