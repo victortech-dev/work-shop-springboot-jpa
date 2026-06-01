@@ -2,9 +2,12 @@ package com.konezocorp.course.services;
 
 import com.konezocorp.course.entities.User;
 import com.konezocorp.course.repositories.UserRepository;
+import com.konezocorp.course.services.exceptions.DatabaseException;
 import com.konezocorp.course.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,16 +31,27 @@ public class UserService {
         return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 
     }
-    public User insert(User obj){
+
+    public User insert(User obj) {
         return repository.save(obj);
     }
-    public void delete (Long id){
-            repository.deleteById(id);
+
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException(id);
+        }else {
+            try {
+                repository.deleteById(id);
+            }catch(DataIntegrityViolationException e){
+                throw new DatabaseException(e.getMessage());
+            }
+        }
     }
-    public User update(Long id, User obj){
+
+    public User update(Long id, User obj) {
         User entity = repository.getReferenceById(id);
         updateData(entity, obj);
-      return repository.save(entity);
+        return repository.save(entity);
     }
 
     private void updateData(User entity, User obj) {
